@@ -1,4 +1,10 @@
 <title>Penyakit - Chirexs 1.0</title>
+<style>
+  .img-preview {
+  height: 80px;
+  object-fit: cover; /* atau 'contain' tergantung kebutuhan */
+}
+</style>
 <?php
 
 session_start();
@@ -28,13 +34,13 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
       }
       return (true);
     }
-    -- >
+  
   </script>
   <?php
 
   include "config/fungsi_alert.php";
   $aksi = "modul/penyakit/aksi_penyakit.php";
-  switch ($_GET[act]) {
+  switch ($_GET['act']) {
     // Tampil penyakit
     default:
       $offset = $_GET['offset'];
@@ -49,7 +55,7 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
 		  <tr><td><input class='btn bg-olive margin' type=button name=tambah value='Tambah Penyakit' onclick=\"window.location.href='penyakit/tambahpenyakit';\"><input type=text name='keyword' style='margin-left: 10px;' placeholder='Ketik dan tekan cari...' class='form-control' value='$_POST[keyword]' /> <input class='btn bg-olive margin' type=submit value='   Cari   ' name=Go></td> </tr>
           </table></form>";
       $baris = mysqli_num_rows($tampil);
-      if ($_POST[Go]) {
+      if ($_POST['Go']) {
         $numrows = mysqli_num_rows(mysqli_query($conn,"SELECT * FROM penyakit where nama_penyakit like '%$_POST[keyword]%'"));
         if ($numrows > 0) {
           echo "<div class='alert alert-success alert-dismissible'>
@@ -62,7 +68,7 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
             <tr>
               <th>No</th>
               <th>Nama Penyakit</th>
-			  <th>Detail Penyakit</th>
+              <th>Gambar</th>
 			  <th>Saran Penyakit</th>
               <th>Aksi</th>
             </tr>
@@ -79,8 +85,10 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
             echo "<tr class='" . $warna . "'>
 			 <td align=center>$no</td>
 			 <td>$r[nama_penyakit]</td>
-			 <td>$r[det_penyakit]</td>
+       
 			 <td>$r[srn_penyakit]</td>
+<td><img src='gambar/penyakit/$r[gambar]' width='100' class='img-preview'></td>
+
 			 <td align=center><a type='button' class='btn btn-block btn-success' href=penyakit/editpenyakit/$r[kode_penyakit]><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ubah </a> &nbsp;
 	          <a type='button' class='btn btn-block btn-danger' href=\"JavaScript: confirmIt('Anda yakin akan menghapusnya ?','$aksi?module=penyakit&act=hapus&id=$r[kode_penyakit]','','','','u','n','Self','Self')\" onMouseOver=\"self.status=''; return true\" onMouseOut=\"self.status=''; return true\"> <i class='fa fa-trash-o' aria-hidden='true'></i> Hapus</a>
              </td></tr>";
@@ -103,8 +111,8 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
             <tr>
               <th>No</th>
               <th>Nama Penyakit</th>
-			  <th>Detail Penyakit</th>
 			  <th>Saran Penyakit</th>
+        <th>Gambar</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -122,8 +130,9 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
             echo "<tr class='" . $warna . "'>
 			 <td align=center>$no</td>
 			 <td>$r[nama_penyakit]</td>
-			 <td>$r[det_penyakit]</td>
 			 <td>$r[srn_penyakit]</td>
+<td><img src='gambar/penyakit/$r[gambar]' width='100' class='img-preview'></td>
+
 			 <td align=center>
 			 <a type='button' class='btn btn-block btn-success' href=penyakit/editpenyakit/$r[kode_penyakit]><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Ubah </a> &nbsp;
 	          <a type='button' class='btn btn-block btn-danger' href=\"JavaScript: confirmIt('Anda yakin akan menghapusnya ?','$aksi?module=penyakit&act=hapus&id=$r[kode_penyakit]','','','','u','n','Self','Self')\" onMouseOver=\"self.status=''; return true\" onMouseOut=\"self.status=''; return true\">
@@ -178,7 +187,6 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
       echo "<form name=text_form method=POST action='$aksi?module=penyakit&act=input' onsubmit='return Blank_TextField_Validator()' enctype='multipart/form-data'>
           <br><br><table class='table table-bordered'>
 		  <tr><td width=120>Nama Penyakit</td><td><input autocomplete='off' type=text placeholder='Masukkan penyakit baru...' class='form-control' name='nama_penyakit' size=30></td></tr>
-		  <tr><td width=120>Detail Penyakit</td><td> <textarea rows='4' cols='50' class='form-control' name='det_penyakit'type=text placeholder='Masukkan detail penyakit baru...'></textarea></td></tr>
 		  <tr><td width=120>Saran Penyakit</td><td><textarea rows='4' cols='50' class='form-control' name='srn_penyakit'type=text placeholder='Masukkan saran penyakit baru...'></textarea></td></tr>
           <tr><td width=120>Gambar Post</td><td>Upload Gambar (Ukuran Maks = 1 MB) : <input type='file' class='form-control' name='gambar' required /></td></tr>		  
           <tr><td></td><td><input class='btn btn-success' type=submit name=submit value='Simpan' >
@@ -189,8 +197,8 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
     case "editpenyakit":
       $edit = mysqli_query($conn,"SELECT * FROM penyakit WHERE kode_penyakit='$_GET[id]'");
       $r = mysqli_fetch_array($edit);
-      if ($r[gambar]) {
-        $gambar = 'gambar/penyakit/' . $r[gambar];
+      if ($r['gambar']) {
+        $gambar = 'gambar/penyakit/' . $r['gambar'];
       } else {
         $gambar = 'gambar/noimage.png';
       }
@@ -199,7 +207,6 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
           <input type=hidden name=id value='$r[kode_penyakit]'>
           <br><br><table class='table table-bordered'>
 		  <tr><td width=120>Nama Penyakit</td><td><input autocomplete='off' type=text class='form-control' name='nama_penyakit' size=30 value=\"$r[nama_penyakit]\"></td></tr>
-		  <tr><td width=120>Detail Penyakit</td><td><textarea rows='4' cols='50' type=text class='form-control' name='det_penyakit'>$r[det_penyakit]</textarea></td></tr>
 		  <tr><td width=120>Saran Penyakit</td><td><textarea rows='4' cols='50' type=text class='form-control' name='srn_penyakit'>$r[srn_penyakit]</textarea></td></tr>
           <tr><td width=120>Gambar Post</td><td>Upload Gambar (Ukuran Maks = 1 MB) : <input id='upload' type='file' class='form-control' name='gambar' required /></td></tr>
           <tr><td></td><td><img id='preview' src='$gambar' width=200></td></tr>          

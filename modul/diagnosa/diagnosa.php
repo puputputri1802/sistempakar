@@ -1,14 +1,30 @@
-<title>Diagnosa - Chirexs 1.0</title>
+<title>Diagnosa</title>
+<style>
+  span.kondisipilih {
+    background-color: transparent;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+td{
+  background-color:rgb(255, 255, 255);
+}
+#diagnosaBtn:active {
+    background-color: #ff80bf; /* Ganti warna saat tombol diklik */
+  }
+
+
+</style>
 <?php
 switch ($_GET['act']) {
 
   default:
     if ($_POST['submit']) {
-      $arcolor = array('#ffffff', '#cc66ff', '#019AFF', '#00CBFD', '#00FEFE', '#A4F804', '#FFFC00', '#FDCD01', '#FD9A01', '#FB6700');
+      $arcolor = array('#ffffff','#FFE6EC', '#FFB6C1', '#FF80A4', '#FF4D94', '#FF1A75', '#FF0066'	);
+
       date_default_timezone_set("Asia/Jakarta");
       $inptanggal = date('Y-m-d H:i:s');
 
-      $arbobot = array('0', '1', '0.8', '0.6', '0.4', '-0.2', '-0.4', '-0.6', '-0.8', '-1');
+      $arbobot = array('0', '0', '0.2', '0.4', '0.6', '0.8', '1');
       $argejala = array();
 
       for ($i = 0; $i < count($_POST['kondisi']); $i++) {
@@ -32,40 +48,29 @@ switch ($_GET['act']) {
       }
 
       //print_r($arkondisitext);
-// -------- perhitungan certainty factor (CF) ---------
-// --------------------- START ------------------------
+      // -------- perhitungan certainty factor (CF) ---------
+      // --------------------- START ------------------------
       $sqlpenyakit = mysqli_query($conn, "SELECT * FROM penyakit order by kode_penyakit");
       $arpenyakit = array();
       while ($rpenyakit = mysqli_fetch_array($sqlpenyakit)) {
-        $cftotal_temp = 0;
-        $cf = 0;
-        $sqlgejala = mysqli_query($conn, "SELECT * FROM basis_pengetahuan where kode_penyakit=$rpenyakit[kode_penyakit]");
         $cflama = 0;
+        $sqlgejala = mysqli_query($conn, "SELECT * FROM basis_pengetahuan where kode_penyakit=$rpenyakit[kode_penyakit]");
         while ($rgejala = mysqli_fetch_array($sqlgejala)) {
-          $arkondisi = explode("_", $_POST['kondisi'][0]);
-          $gejala = $arkondisi[0];
-
-          for ($i = 0; $i < count($_POST['kondisi']); $i++) {
-            $arkondisi = explode("_", $_POST['kondisi'][$i]);
-            $gejala = $arkondisi[0];
-            if ($rgejala['kode_gejala'] == $gejala) {
-              $cf = ($rgejala['mb'] - $rgejala['md']) * $arbobot[$arkondisi[1]];
-              if (($cf >= 0) && ($cf * $cflama >= 0)) {
-                $cflama = $cflama + ($cf * (1 - $cflama));
-              }
-              if ($cf * $cflama < 0) {
-                $cflama = ($cflama + $cf) / (1 - Math . Min(Math . abs($cflama), Math . abs($cf)));
-              }
-              if (($cf < 0) && ($cf * $cflama >= 0)) {
-                $cflama = $cflama + ($cf * (1 + $cflama));
-              }
+          foreach ($_POST['kondisi'] as $input) {
+            $arkondisi = explode("_", $input);
+            $kode_gejala_user = $arkondisi[0];
+            $nilai_kondisi_user = $arkondisi[1];
+            if ($rgejala['kode_gejala'] == $kode_gejala_user) {
+              $cf = $rgejala['mb'] * $arbobot[$nilai_kondisi_user];
+              $cflama = $cflama + ($cf * (1 - $cflama));
             }
           }
         }
         if ($cflama > 0) {
-          $arpenyakit += array($rpenyakit[kode_penyakit] => number_format($cflama, 4));
+          $arpenyakit[$rpenyakit['kode_penyakit']] = number_format($cflama, 4);
         }
       }
+
 
       arsort($arpenyakit);
 
@@ -93,15 +98,16 @@ switch ($_GET['act']) {
                 '$idpkt1[1]',
                 '$vlpkt1[1]'
 				)");
-// --------------------- END -------------------------
+      // --------------------- END -------------------------
 
-      echo "<div class='content'>
+      echo "<div class='content' >
+
 	<h2 class='text text-primary'>Hasil Diagnosis &nbsp;&nbsp;<button id='print' onClick='window.print();' data-toggle='tooltip' data-placement='right' title='Klik tombol ini untuk mencetak hasil diagnosa'><i class='fa fa-print'></i> Cetak</button> </h2>
-	          <hr><table class='table table-bordered table-striped diagnosa'> 
-          <th width=8%>No</th>
-          <th width=10%>Kode</th>
-          <th>Gejala yang dialami (keluhan)</th>
-          <th width=20%>Pilihan</th>
+	          <hr><table class='table table-bordered '  > 
+          <th style='background-color:#ffc0c0' width=8%>No</th>
+          <th style='background-color:#ffc0c0' width=10%>Kode</th>
+          <th style='background-color:#ffc0c0'>Gejala yang dialami (keluhan)</th>
+          <th style='background-color:#ffc0c0'width=20%>Pilihan</th>
           </tr>";
       $ig = 0;
       foreach ($argejala as $key => $value) {
@@ -111,9 +117,9 @@ switch ($_GET['act']) {
         $sql4 = mysqli_query($conn, "SELECT * FROM gejala where kode_gejala = '$key'");
         $r4 = mysqli_fetch_array($sql4);
         echo '<tr><td>' . $ig . '</td>';
-        echo '<td>G' . str_pad($r4[kode_gejala], 3, '0', STR_PAD_LEFT) . '</td>';
-        echo '<td><span class="hasil text text-primary">' . $r4[nama_gejala] . "</span></td>";
-        echo '<td><span class="kondisipilih" style="color:' . $arcolor[$kondisi] . '">' . $arkondisitext[$kondisi] . "</span></td></tr>";
+        echo '<td>G' . str_pad($r4['kode_gejala'], 3, '0', STR_PAD_LEFT) . '</td>';
+        echo '<td><span style="color:black"class="hasil text text-primary">' . $r4['nama_gejala'] . "</span></td>";
+        echo '<td><span class="kondisipilih" style="color:' . $arcolor[$kondisi] . '" >' . $arkondisitext[$kondisi] . "</span></td></tr>";
       }
       $np = 0;
       foreach ($arpenyakit as $key => $value) {
@@ -127,20 +133,13 @@ switch ($_GET['act']) {
       } else {
         $gambar = 'gambar/noimage.png';
       }
-      echo "</table><div class='well well-small'><img class='card-img-top img-bordered-sm' style='float:right; margin-left:15px;' src='" . $gambar . "' height=200><h3>Hasil Diagnosa</h3>";
-      echo "<div class='callout callout-default'>Jenis penyakit yang diderita adalah <b><h3 class='text text-success'>" . $nmpkt[1] . "</b> / " . round($vlpkt[1], 2) . " % (" . $vlpkt[1] . ")<br></h3>";
-      echo "</div></div><div class='box box-info box-solid'><div class='box-header with-border'><h3 class='box-title'>Detail</h3></div><div class='box-body'><h4>";
-      echo $ardpkt[$idpkt[1]];
+      echo "</table><div class='well well-small' ><img class='card-img-top img-bordered-sm' style='float:right; margin-left:15px;' src='" . $gambar . "' height=200><h3>Hasil Diagnosa</h3>";
+      $persentase = number_format($vlpkt[1] * 100, 1, ',', '');
+      $nilai_cf = str_replace('.', ',', $vlpkt[1]);
+      echo "<div class='callout callout-default'>Jenis penyakit yang diderita adalah <b><h3 class='text text-success'>" . $nmpkt[1] . "</b> / " . $persentase . "% (" . $nilai_cf . ")<br></h3>";
       echo "</h4></div></div>
-          <div class='box box-warning box-solid'><div class='box-header with-border'><h3 class='box-title'>Saran</h3></div><div class='box-body'><h4>";
-      echo $arspkt[$idpkt[1]];
-      echo "</h4></div></div>
-          <div class='box box-danger box-solid'><div class='box-header with-border'><h3 class='box-title'>Kemungkinan lain:</h3></div><div class='box-body'><h4>";
-      for ($ipl = 2; $ipl < count($idpkt); $ipl++) {
-        echo " <h4><i class='fa fa-caret-square-o-right'></i> " . $nmpkt[$ipl] . "</b> / " . round($vlpkt[$ipl], 2) . " % (" . $vlpkt[$ipl] . ")<br></h4>";
-      }
-      echo "</div></div>
-		  </div>";
+        <div class='box box-warning box-solid'><div class='box-header with-border'><h3 class='box-title'>Saran</h3></div><div class='box-body'><h4>";
+      
     } else {
       echo "
 	 <h2 class='text text-primary'>Diagnosa Penyakit</h2>  <hr>
@@ -150,35 +149,49 @@ switch ($_GET['act']) {
                 Silahkan memilih gejala sesuai dengan kondisi ayam anda, anda dapat memilih kepastian kondisi ayam dari pasti tidak sampai pasti ya, jika sudah tekan tombol proses (<i class='fa fa-search-plus'></i>)  di bawah untuk melihat hasil.
               </div>
 		<form name=text_form method=POST action='diagnosa' >
-           <table class='table table-bordered table-striped konsultasi'><tbody class='pilihkondisi'>
-           <tr><th>No</th><th>Kode</th><th>Gejala</th><th width='20%'>Pilih Kondisi</th></tr>";
+           <table  class='table table-bordered  '><tbody class='pilihkondisi'>
+           <tr >
+           <th  style='background-color:#ffc0c0'>No</th>
+           <th  style='background-color:#ffc0c0'>Kode</th>
+           <th  style='background-color:#ffc0c0'>Gejala</th>
+           <th  style='background-color:#ffc0c0'width='20%'>Pilih Kondisi</th>
+           </tr>";
 
       $sql3 = mysqli_query($conn, "SELECT * FROM gejala order by kode_gejala");
       $i = 0;
       while ($r3 = mysqli_fetch_array($sql3)) {
         $i++;
-        echo "<tr><td class=opsi>$i</td>";
-        echo "<td class=opsi>G" . str_pad($r3[kode_gejala], 3, '0', STR_PAD_LEFT) . "</td>";
+        echo "<tr><td  class=opsi>$i</td>";
+        echo "<td  class=opsi>G" . str_pad($r3['kode_gejala'], 3, '0', STR_PAD_LEFT) . "</td>";
         echo "<td class=gejala>$r3[nama_gejala]</td>";
-        echo '<td class="opsi"><select name="kondisi[]" id="sl' . $i . '" class="opsikondisi"/><option data-id="0" value="0">Pilih jika sesuai</option>';
+        echo '<td class="opsi"><select name="kondisi[]" id="sl' . $i . '" style="color:#fffff" class="opsikondisi"/><option style="color:#ffffff; background-color:#ffc0cb;" data-id="0" value="0">Pilih jika sesuai</option>';
         $s = "select * from kondisi order by id";
         $q = mysqli_query($conn, $s) or die($s);
         while ($rw = mysqli_fetch_array($q)) {
-          ?>
-          <option data-id="<?php echo $rw['id']; ?>" value="<?php echo $r3['kode_gejala'] . '_' . $rw['id']; ?>"><?php echo $rw['kondisi']; ?></option>
-          <?php
+?>
+<option style="color:#ffffff; background-color:#ffc0cb;" data-id="<?php echo $rw['id']; ?>" value="<?php echo $r3['kode_gejala'] . '_' . $rw['id']; ?>"><?php echo $rw['kondisi']; ?></option>
+<?php
         }
         echo '</select></td>';
         ?>
         <script type="text/javascript">
-          $(document).ready(function () {
-            var arcolor = new Array('#ffffff', '#cc66ff', '#019AFF', '#00CBFD', '#00FEFE', '#A4F804', '#FFFC00', '#FDCD01', '#FD9A01', '#FB6700');
+          $(document).ready(function() {
+            var arcolor = new Array(
+              '#ffffff', 
+              '#FFE6EC', //  Tidak
+              '#FFB6C1', //  Tidak yakin
+              '#FF80A4', //  Sedikit yakin
+              '#FF4D94', //  Cukup yakin
+              '#FF1A75', //  Yakin
+              '#CC0055', //  Sangat yakin
+            );
+
             setColor();
-            $('.pilihkondisi').on('change', 'tr td select#sl<?php echo $i; ?>', function () {
+            $('.pilihkondisi').on('change', 'tr td select#sl<?php echo $i; ?>', function() {
               setColor();
             });
-            function setColor()
-            {
+
+            function setColor() {
               var selectedItem = $('tr td select#sl<?php echo $i; ?> :selected');
               var color = arcolor[selectedItem.data("id")];
               $('tr td select#sl<?php echo $i; ?>.opsikondisi').css('background-color', color);
@@ -186,11 +199,11 @@ switch ($_GET['act']) {
             }
           });
         </script>
-        <?php
+<?php
         echo "</tr>";
       }
       echo "
-		  <input class='float' type=submit data-toggle='tooltip' data-placement='top' title='Klik disini untuk melihat hasil diagnosa' name=submit value='&#xf00e;' style='font-family:Arial, FontAwesome'>
+		  <input  class='float' type=submit data-toggle='tooltip' data-placement='top' title='Klik disini untuk melihat hasil diagnosa' name=submit value='&#xf00e;' style='font-family:Arial, FontAwesome; background-color:#ffc0cb; color:#ffffff;' id='diagnosaBtn'>
           </tbody></table></form>";
     }
     break;

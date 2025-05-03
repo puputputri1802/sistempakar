@@ -1,104 +1,104 @@
-<title>Beranda - Chirexs 1.0</title>
-<?php 
-  $htgejala=mysqli_query($conn,"SELECT count(*) as total from gejala");
-	$dtgejala=mysqli_fetch_assoc($htgejala); ?>
-	<div class='row'>
-        <div class='col-lg-3 col-xs-6'>
-          <!-- small box -->
-          <div class='small-box bg-aqua'>
-            <div class='inner'>
-              <h3> <?php echo $dtgejala["total"]; ?></h3>
-              <p>Total Gejala</p>
-            </div>
-            <div class='icon'>
-              <i class='ion ion-thermometer'></i>
-            </div>
-          </div>
-        </div>
-        <!-- ./col -->
-<?php 
-	$htpenyakit=mysqli_query($conn,"SELECT count(*) as total from penyakit");
-	  $dtpenyakit=mysqli_fetch_assoc($htpenyakit); ?>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3> <?php echo $dtpenyakit["total"]; ?></h3>
-
-              <p>Total Penyakit</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-bug"></i>
-            </div>
-          </div>
-        </div>
-        <!-- ./col -->
-<?php 
-	$htpengetahuan=mysqli_query($conn,"SELECT count(*) as total from basis_pengetahuan");
-	  $dtpengetahuan=mysqli_fetch_assoc($htpengetahuan); ?>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3><?php echo $dtpengetahuan["total"]; ?></h3>
-
-              <p>Total Pengetahuan</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-erlenmeyer-flask"></i>
-            </div>
-          </div>
-        </div>
-        <!-- ./col -->
-<?php 
-	$htadmin=mysqli_query($conn,"SELECT count(*) as total from admin");
-	  $dtadmin=mysqli_fetch_assoc($htadmin); ?>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-             <h3> <?php echo $dtadmin["total"]; ?></h3>
-              <p>Total Admin Pakar</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-          </div>
-        </div>
-        <!-- ./col -->
+<title>Beranda</title>
+<?php
+$htgejala = mysqli_query($conn, "SELECT count(*) as total from gejala");
+$dtgejala = mysqli_fetch_assoc($htgejala); ?>
+<div class='row'>
+  <div class='col-lg-3 col-xs-6'>
+    <!-- small box -->
+    <div class='small-box' style="background-color: #AC1754  ; color: white;">
+      <div class='inner'>
+        <h3> <?php echo $dtgejala["total"]; ?></h3>
+        <p>Total Gejala</p>
       </div>
+      <div class='icon'>
+        <i class='ion ion-thermometer'></i>
+      </div>
+    </div>
+  </div>
+  <!-- ./col -->
+  <?php
+  $htpenyakit = mysqli_query($conn, "SELECT count(*) as total from penyakit");
+  $dtpenyakit = mysqli_fetch_assoc($htpenyakit); ?>
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box" style="background-color: #E53888; color: white;">
+      <div class="inner">
+        <h3> <?php echo $dtpenyakit["total"]; ?></h3>
+
+        <p>Total Penyakit</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-bug"></i>
+      </div>
+    </div>
+  </div>
+  <!-- ./col -->
+  <?php
+  $htpengetahuan = mysqli_query($conn, "SELECT count(*) as total from basis_pengetahuan");
+  $dtpengetahuan = mysqli_fetch_assoc($htpengetahuan); ?>
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box" style="background-color: #F37199; color: white;">
+      <div class="inner">
+        <h3><?php echo $dtpengetahuan["total"]; ?></h3>
+
+        <p>Total Pengetahuan</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-erlenmeyer-flask"></i>
+      </div>
+    </div>
+  </div>
+  <!-- ./col -->
+  <?php
+  $htadmin = mysqli_query($conn, "SELECT count(*) as total from admin");
+  $dtadmin = mysqli_fetch_assoc($htadmin); ?>
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box" style="background-color: #F7A8C4; color: white;">
+      <div class="inner">
+        <h3> <?php echo $dtadmin["total"]; ?></h3>
+        <p>Total Admin Pakar</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-person-add"></i>
+      </div>
+    </div>
+  </div>
+  <!-- ./col -->
+</div>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                  <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
-                  <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
-                  <li data-target="#carousel-example-generic" data-slide-to="2" class="active"></li>
-                </ol>
-                <div class="carousel-inner">
-                  <div class="item active">
-                    <img src="aset/banner/ayam.jpg" alt="First slide">
-                    <div class="carousel-caption">
-                    </div>
-                  </div>
-                  <div class="item">
-                    <img src="aset/banner/telur.jpg" alt="Second slide">
-                    <div class="carousel-caption">
-                    </div>
-                  </div><!--
-                  <div class="item active">
+  <ol class="carousel-indicators">
+    <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
+    <li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
+    <li data-target="#carousel-example-generic" data-slide-to="2" class="active"></li>
+  </ol>
+  <div class="carousel-inner" style="margin-bottom: 100px;">
+    <div class="item active">
+      <img src="aset/banner/1.png" alt="First slide">
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <div class="item">
+      <img src="aset/banner/2.png" alt="Second slide">
+      <div class="carousel-caption">
+      </div>
+    </div>
+    <!-- <div class="item active">
                     <img src="aset/banner/daging.jpg" alt="Third slide">
                     <div class="carousel-caption">
                     </div>
-                  </div>-->
-                </div> 
-                <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
-                  <span class="fa fa-angle-left"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
-                  <span class="fa fa-angle-right"></span>
-                </a>
-              </div>
-			  <br>
-            <div class="row">
+                  </div> -->
+  </div>
+  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+    <span class="fa fa-angle-left"></span>
+  </a>
+  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+    <span class="fa fa-angle-right"></span>
+  </a>
+</div>
+<br>
+<!-- <div class="row">
                 <div class="col-sm-4 text-center padding wow fadeIn animated" data-wow-duration="1000ms" data-wow-delay="300ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 300ms; animation-name: fadeIn;">
                     <div class="single-service">
                      
@@ -124,5 +124,5 @@
                         <p>Terdapat fitur admin pakar, untuk mengatur pengetahuan dan CF pakar, telah di sesuaikan tampilannya sehingga pakar bisa lebih mengeksplore aplikasi.</p>
                     </div>
                 </div>
-            </div>
-        <div></div>
+            </div> -->
+<div></div>

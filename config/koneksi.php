@@ -1,17 +1,13 @@
 <?php
-    $server = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "spkayam";
+$host = "localhost";
+$username = "root";
+$password = "";
+$dbname = "pakar";
 
-   $conn = mysqli_connect($server, $username, $password, $database);
-  /*  if (mysqli_connect_errno()) {
-    echo "Koneksi gagal: " . mysqli_connect_error();
-    exit();
-  } else {
-      echo "Koneksi success";
-  } */
-?> 
+// Gunakan mysqli_connect untuk koneksi database
+$conn = mysqli_connect($host, $username, $password, $dbname);
 
-
-
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
+}
+?>

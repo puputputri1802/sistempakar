@@ -10,8 +10,8 @@ if (!(isset($_SESSION['username']) && isset($_SESSION['password']))) {
 session_start();
 include "../../config/koneksi.php";
 
-$module=$_GET[module];
-$act=$_GET[act];
+$module=$_GET['module'];
+$act=$_GET['act'];
 
 // Hapus pengetahuan
 if ($module=='pengetahuan' AND $act=='hapus'){
@@ -21,28 +21,27 @@ if ($module=='pengetahuan' AND $act=='hapus'){
 
 // Input pengetahuan
 elseif ($module=='pengetahuan' AND $act=='input'){
-$kode_penyakit=$_POST[kode_penyakit];
-$kode_gejala=$_POST[kode_gejala];
-$mb=$_POST[mb];
-$md=$_POST[md];
+$kode_penyakit=$_POST['kode_penyakit'];
+$kode_gejala=$_POST['kode_gejala'];
+$mb=$_POST['mb'];
+
 mysqli_query($conn,"INSERT INTO basis_pengetahuan(
-			      kode_penyakit,kode_gejala,mb,md) 
+			      kode_penyakit,kode_gejala,mb) 
 	                       VALUES(
-				'$kode_penyakit','$kode_gejala','$mb','$md')");
+				'$kode_penyakit','$kode_gejala','$mb')");
 header('location:../../index.php?module='.$module);
 }
 
 // Update pengetahuan
 elseif ($module=='pengetahuan' AND $act=='update'){
-$kode_penyakit=$_POST[kode_penyakit];
-$kode_gejala=$_POST[kode_gejala];
-$mb=$_POST[mb];
-$md=$_POST[md];
+$kode_penyakit=$_POST['kode_penyakit'];
+$kode_gejala=$_POST['kode_gejala'];
+$mb=$_POST['mb'];
+
   mysqli_query($conn,"UPDATE basis_pengetahuan SET
 					kode_penyakit   = '$kode_penyakit',
 					kode_gejala   = '$kode_gejala',
-					mb   = '$mb',
-					md   = '$md'
+					mb   = '$mb'
                WHERE kode_pengetahuan       = '$_POST[id]'");
   header('location:../../index.php?module='.$module);
  }

@@ -1,7 +1,7 @@
 <title>Ubah Password - Chirexs 1.0</title>
 <?php
-if ($_SESSION[username] != "" && $_SESSION[password] != ""){
-switch($_GET[act]){
+if ($_SESSION['username'] != "" && $_SESSION['password'] != ""){
+switch($_GET['act']){
 default:
 echo "	<form method='post' action='?module=password&act=updatepassword'>
 		<table class='table table-bordered'>
@@ -10,8 +10,8 @@ echo "	<form method='post' action='?module=password&act=updatepassword'>
 		<br><tr><td>Masukkan kembali password baru</td><td><input class='form-control' autocomplete='off' placeholder='Ulangi password baru...' type='password' name='newPass2' /></td></tr>
 		<tr><td></td><td>
 		<input class='btn btn-success' type=submit name=submit title='Simpan' alt='Simpan' value='Simpan' />
-		<input type='hidden' name='pass' value='".$_SESSION[password]."'>
-		<input type='hidden' name='nama' value='".$_SESSION[username]."'></td></tr>
+		<input type='hidden' name='pass' value='".$_SESSION['password']."'>
+		<input type='hidden' name='nama' value='".$_SESSION['username']."'></td></tr>
 		</table>		
 		</form>";
 break;
